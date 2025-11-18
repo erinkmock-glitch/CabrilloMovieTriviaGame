@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cabrillo College Fan Fav Films Trivia by Erin Mock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #fdf2ff, #dbeafe);
+      padding: 1rem;
+    }
+
+    .game-container {
+      position: relative;
+      background: white;
+      max-width: 640px;
+      width: 100%;
+      border-radius: 1.25rem;
+      padding: 1.75rem 1.9rem;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+      overflow: hidden;
+    }
+
+    .game-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .tagline {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 0.75rem;
+    }
+
+    .badge-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+
+    .badge-secondary {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .progress-text {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-bottom: 0.5rem;
+    }
+
+    .quote-block {
+      border-left: 4px solid #4f46e5;
+      background: #f9fafb;
+      padding: 0.9rem 1rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .quote-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 0.2rem;
+    }
+
+    .quote-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .input-row label {
+      font-size: 0.9rem;
+      color: #4b5563;
+    }
+
+    #answer-input {
+      width: 100%;
+      padding: 0.55rem 0.7rem;
+      border-radius: 0.7rem;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    #answer-input:focus {
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.3);
+    }
+
+    .feedback {
+      min-height: 1.4em;
+      font-size: 0.95rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feedback.correct-text {
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    .feedback.incorrect-text {
+      color: #b91c1c;
+      font-weight: 500;
+    }
+
+    .round-summary {
+      font-size: 0.9rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border-radius: 999px;
+      padding: 0.55rem 1.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.08s ease;
+    }
+
+    .primary-btn {
+      background: #4f46e5;
+      color: white;
+      box-shadow: 0 12px 25px rgba(79, 70, 229, 0.35);
+    }
+
+    .primary-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px rgba(79, 70, 229, 0.4);
+    }
+
+    .secondary-btn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .secondary-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(55, 65, 81, 0.25);
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.6;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Intro splash overlay */
+    .intro-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, #111827, #020617);
+      color: #e5e7eb;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem 1.5rem;
+      z-index: 10;
+    }
+
+    .intro-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.75rem;
+    }
+
+    .intro-subtitle {
+      font-size: 0.95rem;
+      color: #cbd5f5;
+      margin-bottom: 1.2rem;
+      max-width: 420px;
+    }
+
+    .intro-decades {
+      font-size: 0.9rem;
+      color: #9ca3af;
+      margin-bottom: 1.4rem;
+    }
+
+    .intro-decades span {
+      display: inline-block;
+      margin: 0 0.15rem;
+    }
+
+    .intro-note {
+      font-size: 0.82rem;
+      color: #9ca3af;
+      margin-top: 0.75rem;
+      max-width: 360px;
+    }
+
+    .intro-highlight {
+      font-weight: 600;
+      color: #fbbf24;
+    }
+
+    @media (max-width: 540px) {
+      .game-container {
+        padding: 1.4rem 1.1rem;
+      }
+
+      .title {
+        font-size: 1.1rem;
+      }
+
+      .intro-title {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <!-- Intro Splash Screen -->
+    <div id="intro-overlay" class="intro-overlay">
+      <div class="intro-title">Cabrillo College Fan Fav Films Trivia<br/>by Erin Mock</div>
+      <div class="intro-subtitle">
+        Journey through iconic movie quotes from the 2000s back to the 1950s.
+        Guess the film, pass each decade, and prove your film-buff status.
+      </div>
+      <div class="intro-decades">
+        <span>🎬 2000s</span>•
+        <span>1990s</span>•
+        <span>1980s</span>•
+        <span>1970s</span>•
+        <span>1960s</span>•
+        <span>1950s 📽️</span>
+      </div>
+      <button id="intro-start-btn" class="primary-btn">
+        Start the Trivia Challenge ▶️
+      </button>
+      <div class="intro-note">
+        Each decade includes a unique, generated background <span class="intro-highlight">music mood</span>.
+        Get at least <span class="intro-highlight">3 out of 5</span> quotes right per decade to move on.
+      </div>
+    </div>
+
+    <!-- Main Game UI -->
+    <div class="game-header">
+      <div>
+        <div class="title">Cabrillo College Fan Fav Films Trivia by Erin Mock 🎬</div>
+        <div class="tagline">Guess the movie, decade by decade. Get 3/5 each round to survive.</div>
+      </div>
+
+      <div class="badge-group">
+        <div id="round-badge" class="badge">Round 1 / 6</div>
+        <div id="decade-badge" class="badge badge-secondary">2000s</div>
+      </div>
+    </div>
+
+    <div id="progress" class="progress-text"></div>
+
+    <div class="quote-block">
+      <div class="quote-label">Quote:</div>
+      <div id="quote" class="quote-text"></div>
+    </div>
+
+    <div class="input-row" id="answer-row">
+      <label for="answer-input">Type the movie title (or close enough):</label>
+      <input id="answer-input" type="text" autocomplete="off" />
+    </div>
+
+    <div id="feedback" class="feedback"></div>
+    <div id="round-summary" class="round-summary"></div>
+
+    <div class="controls">
+      <button id="restart-btn" class="secondary-btn hidden">Play again 🔁</button>
+      <button id="next-btn" class="secondary-btn" disabled>Next ➡️</button>
+      <button id="submit-btn" class="primary-btn">Submit ✅</button>
+    </div>
+  </div>
+
+  <script>
+    // ========= DATA: ROUNDS & QUOTES =========
+    const rounds = [
+      {
+        decade: "2000s",
+        questions: [
+          { quote: "Why so serious?", answers: ["the dark knight", "dark knight"] },
+          {
+            quote: "You shall not pass!",
+            answers: [
+              "the lord of the rings: the fellowship of the ring",
+              "lord of the rings",
+              "the fellowship of the ring",
+              "fellowship of the ring"
+            ]
+          },
+          { quote: "On Wednesdays we wear pink.", answers: ["mean girls"] },
+          { quote: "Are you not entertained?", answers: ["gladiator"] },
+          { quote: "Just keep swimming.", answers: ["finding nemo"] }
+        ]
+      },
+      {
+        decade: "1990s",
+        questions: [
+          { quote: "I'm the king of the world!", answers: ["titanic"] },
+          { quote: "There is no spoon.", answers: ["the matrix", "matrix"] },
+          { quote: "Show me the money!", answers: ["jerry maguire"] },
+          { quote: "Life is like a box of chocolates.", answers: ["forrest gump"] },
+          { quote: "I see dead people.", answers: ["the sixth sense", "sixth sense"] }
+        ]
+      },
+      {
+        decade: "1980s",
+        questions: [
+          {
+            quote: "No, I am your father.",
+            answers: [
+              "star wars: episode v",
+              "the empire strikes back",
+              "star wars",
+              "star wars episode v",
+              "empire strikes back"
+            ]
+          },
+          { quote: "Here's Johnny!", answers: ["the shining", "shining"] },
+          { quote: "E.T. phone home.", answers: ["e.t.", "et", "e.t. the extra-terrestrial"] },
+          { quote: "Say hello to my little friend!", answers: ["scarface"] },
+          { quote: "Nobody puts Baby in a corner.", answers: ["dirty dancing"] }
+        ]
+      },
+      {
+        decade: "1970s",
+        questions: [
+          { quote: "You're gonna need a bigger boat.", answers: ["jaws"] },
+          { quote: "You talkin' to me?", answers: ["taxi driver"] },
+          { quote: "May the Force be with you.", answers: ["star wars"] },
+          { quote: "Yo, Adrian!", answers: ["rocky"] },
+          { quote: "I love the smell of napalm in the morning.", answers: ["apocalypse now"] }
+        ]
+      },
+      {
+        decade: "1960s",
+        questions: [
+          { quote: "We all go a little mad sometimes.", answers: ["psycho"] },
+          { quote: "Mrs. Robinson, you're trying to seduce me.", answers: ["the graduate", "graduate"] },
+          {
+            quote: "I'm sorry, Dave. I'm afraid I can't do that.",
+            answers: ["2001: a space odyssey", "2001 a space odyssey", "2001"]
+          },
+          {
+            quote: "Gentlemen, you can't fight in here. This is the War Room!",
+            answers: [
+              "dr. strangelove or: how i learned to stop worrying and love the bomb",
+              "dr. strangelove",
+              "dr strangelove"
+            ]
+          },
+          { quote: "The hills are alive with the sound of music.", answers: ["the sound of music", "sound of music"] }
+        ]
+      },
+      {
+        decade: "1950s",
+        questions: [
+          { quote: "All right, Mr. DeMille, I'm ready for my close-up.", answers: ["sunset boulevard"] },
+          { quote: "Stella! Hey, Stella!", answers: ["a streetcar named desire", "streetcar named desire"] },
+          { quote: "Let my people go!", answers: ["the ten commandments", "ten commandments"] },
+          { quote: "You're tearing me apart!", answers: ["rebel without a cause"] },
+          { quote: "Klaatu barada nikto.", answers: ["the day the earth stood still", "day the earth stood still"] }
+        ]
+      }
+    ];
+
+    // ========= WEB AUDIO MUSIC ENGINE =========
+    let audioCtx = null;
+    let activeAudioNodes = [];
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+      }
+    }
+
+    function registerNode(node) {
+      if (node) activeAudioNodes.push(node);
+    }
+
+    function stopAllMusic() {
+      activeAudioNodes.forEach(node => {
+        try {
+          if (node.stop) node.stop();
+          node.disconnect();
+        } catch (e) {}
+      });
+      activeAudioNodes = [];
+    }
+
+    // Long, soft pad
+    function startAmbientPad(baseFreq, volume = 0.4) {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      for (let i = 0; i < 3; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = baseFreq * (1 + i * 0.05);
+
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(volume / (i + 1), now + 2);
+        gain.gain.linearRampToValueAtTime(volume / (i + 1), now + 18);
+        gain.gain.linearRampToValueAtTime(0, now + 22);
+
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 22);
+
+        registerNode(osc);
+        registerNode(gain);
+      }
+    }
+
+    // Bell-like tinkles
+    function startBellPad(baseFreq, volume = 0.25) {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      for (let i = 0; i < 4; i++) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "triangle";
+        osc.frequency.value = baseFreq * (1 + i * 0.07);
+
+        const start = now + i * 1.5;
+        gain.gain.setValueAtTime(0, start);
+        gain.gain.linearRampToValueAtTime(volume, start + 0.3);
+        gain.gain.linearRampToValueAtTime(0.01, start + 2);
+
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(start);
+        osc.stop(start + 3);
+
+        registerNode(osc);
+        registerNode(gain);
+      }
+    }
+
+    // Simple synthwave-ish bass + chord
+    function startSynthwave() {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      const bass = audioCtx.createOscillator();
+      const bassGain = audioCtx.createGain();
+      bass.type = "sawtooth";
+      bass.frequency.value = 110;
+
+      bassGain.gain.setValueAtTime(0, now);
+      bassGain.gain.linearRampToValueAtTime(0.18, now + 1);
+      bassGain.gain.linearRampToValueAtTime(0.18, now + 18);
+      bassGain.gain.linearRampToValueAtTime(0, now + 22);
+
+      bass.connect(bassGain).connect(audioCtx.destination);
+      bass.start(now);
+      bass.stop(now + 22);
+
+      registerNode(bass);
+      registerNode(bassGain);
+
+      const chordFreqs = [220, 277, 330]; // A minor-ish
+      chordFreqs.forEach((f, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.value = f;
+
+        gain.gain.setValueAtTime(0, now + i * 0.2);
+        gain.gain.linearRampToValueAtTime(0.12, now + 2 + i * 0.2);
+        gain.gain.linearRampToValueAtTime(0.12, now + 18);
+        gain.gain.linearRampToValueAtTime(0, now + 22);
+
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 22);
+
+        registerNode(osc);
+        registerNode(gain);
+      });
+    }
+
+    // Warm low hum
+    function startWarmHum(freq = 110) {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.16, now + 2);
+      gain.gain.linearRampToValueAtTime(0.16, now + 18);
+      gain.gain.linearRampToValueAtTime(0, now + 22);
+
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 22);
+
+      registerNode(osc);
+      registerNode(gain);
+    }
+
+    // Organ-like pad
+    function startOrganPad(baseFreq = 330) {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      const freqs = [baseFreq, baseFreq * 2, baseFreq * 3 / 2];
+      freqs.forEach((f, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "square";
+        osc.frequency.value = f;
+
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.12 / (i + 1), now + 1.5);
+        gain.gain.linearRampToValueAtTime(0.12 / (i + 1), now + 18);
+        gain.gain.linearRampToValueAtTime(0, now + 22);
+
+        osc.connect(gain).connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 22);
+
+        registerNode(osc);
+        registerNode(gain);
+      });
+    }
+
+    // Simple vintage-y melody
+    function startVintageMelody() {
+      initAudio();
+      const now = audioCtx.currentTime;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+
+      const notes = [330, 392, 440, 392, 330, 294, 262, 294];
+      notes.forEach((freq, i) => {
+        const t = now + i * 1.2;
+        osc.frequency.setValueAtTime(freq, t);
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.2, t + 0.2);
+        gain.gain.linearRampToValueAtTime(0.03, t + 1);
+      });
+
+      gain.gain.linearRampToValueAtTime(0, now + notes.length * 1.2 + 1);
+
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + notes.length * 1.2 + 2);
+
+      registerNode(osc);
+      registerNode(gain);
+    }
+
+    function playDecadeMusic(decade) {
+      stopAllMusic();
+
+      // Each call creates a long ambient "pass" (~20s).
+      // If the player stays longer, it's still fine; we just restart on decade changes.
+      switch (decade) {
+        case "2000s":
+          startAmbientPad(220, 0.35);
+          break;
+        case "1990s":
+          startBellPad(440, 0.22);
+          break;
+        case "1980s":
+          startSynthwave();
+          break;
+        case "1970s":
+          startWarmHum(110);
+          break;
+        case "1960s":
+          startOrganPad(330);
+          break;
+        case "1950s":
+          startVintageMelody();
+          break;
+      }
+    }
+
+    // ========= GAME STATE =========
+    let currentRoundIndex = 0;
+    let currentQuestionIndex = 0;
+    let correctThisRound = 0;
+    let awaitingAnswer = true;
+    let gameStarted = false;
+
+    // ========= DOM ELEMENTS =========
+    const roundBadge = document.getElementById("round-badge");
+    const decadeBadge = document.getElementById("decade-badge");
+    const progressText = document.getElementById("progress");
+    const quoteElement = document.getElementById("quote");
+    const answerInput = document.getElementById("answer-input");
+    const feedbackText = document.getElementById("feedback");
+    const roundSummaryText = document.getElementById("round-summary");
+    const submitBtn = document.getElementById("submit-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const restartBtn = document.getElementById("restart-btn");
+    const answerRow = document.getElementById("answer-row");
+    const introOverlay = document.getElementById("intro-overlay");
+    const introStartBtn = document.getElementById("intro-start-btn");
+
+    // ========= HELPERS =========
+    function normalize(str) {
+      return str
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9 ]/g, "")
+        .replace(/^the\s+/, ""); // ignore leading "the"
+    }
+
+    function isCorrectAnswer(userInput, acceptableAnswers) {
+      const normUser = normalize(userInput);
+      return acceptableAnswers.some(ans => normalize(ans) === normUser);
+    }
+
+    // ========= GAME FLOW =========
+    function startGame() {
+      currentRoundIndex = 0;
+      currentQuestionIndex = 0;
+      correctThisRound = 0;
+      awaitingAnswer = true;
+      gameStarted = true;
+
+      restartBtn.classList.add("hidden");
+      submitBtn.disabled = false;
+      nextBtn.disabled = true;
+      answerRow.classList.remove("hidden");
+
+      feedbackText.textContent = "";
+      feedbackText.className = "feedback";
+      roundSummaryText.textContent = "";
+
+      updateRoundBadges();
+      showQuestion();
+      playDecadeMusic(rounds[currentRoundIndex].decade);
+    }
+
+    function updateRoundBadges() {
+      const totalRounds = rounds.length;
+      const roundNumber = currentRoundIndex + 1;
+      const decade = rounds[currentRoundIndex].decade;
+      roundBadge.textContent = `Round ${roundNumber} / ${totalRounds}`;
+      decadeBadge.textContent = decade;
+    }
+
+    function showQuestion() {
+      const round = rounds[currentRoundIndex];
+      const question = round.questions[currentQuestionIndex];
+      const qNumber = currentQuestionIndex + 1;
+      const totalQ = round.questions.length;
+
+      progressText.textContent = `Decade: ${round.decade} — Question ${qNumber} of ${totalQ} — Need at least 3 correct to pass.`;
+      quoteElement.textContent = question.quote;
+
+      answerInput.value = "";
+      answerInput.disabled = false;
+      answerInput.focus();
+
+      feedbackText.textContent = "";
+      feedbackText.className = "feedback";
+      roundSummaryText.textContent = "";
+
+      awaitingAnswer = true;
+      submitBtn.disabled = false;
+      nextBtn.disabled = true;
+      nextBtn.textContent = "Next ➡️";
+    }
+
+    function checkAnswer() {
+      const userAnswer = answerInput.value;
+      if (!userAnswer.trim()) {
+        feedbackText.textContent = "Type a movie title before submitting.";
+        feedbackText.className = "feedback incorrect-text";
+        return;
+      }
+
+      const round = rounds[currentRoundIndex];
+      const question = round.questions[currentQuestionIndex];
+
+      const correct = isCorrectAnswer(userAnswer, question.answers);
+      if (correct) {
+        correctThisRound++;
+        feedbackText.textContent = "Correct! 🎉";
+        feedbackText.className = "feedback correct-text";
+      } else {
+        const mainAnswer = question.answers[0];
+        feedbackText.textContent = `Not quite! The movie was "${mainAnswer}".`;
+        feedbackText.className = "feedback incorrect-text";
+      }
+
+      answerInput.disabled = true;
+      submitBtn.disabled = true;
+      nextBtn.disabled = false;
+      awaitingAnswer = false;
+    }
+
+    function handleNext() {
+      const round = rounds[currentRoundIndex];
+      const totalQ = round.questions.length;
+
+      if (currentQuestionIndex < totalQ - 1) {
+        currentQuestionIndex++;
+        showQuestion();
+      } else {
+        endRound();
+      }
+    }
+
+    function endRound() {
+      const needed = 3;
+      const totalQ = rounds[currentRoundIndex].questions.length;
+      const decade = rounds[currentRoundIndex].decade;
+      const passed = correctThisRound >= needed;
+
+      answerInput.disabled = true;
+      submitBtn.disabled = true;
+      nextBtn.disabled = false;
+      awaitingAnswer = false;
+
+      roundSummaryText.textContent = `You got ${correctThisRound} out of ${totalQ} correct in the ${decade}.`;
+
+      if (!passed) {
+        feedbackText.textContent = `You needed at least ${needed} to pass the ${decade}. Game over. 😢`;
+        feedbackText.className = "feedback incorrect-text";
+        nextBtn.classList.add("hidden");
+        restartBtn.classList.remove("hidden");
+        stopAllMusic();
+      } else {
+        if (currentRoundIndex === rounds.length - 1) {
+          feedbackText.textContent = `You passed the ${decade} and completed all decades. You win! 🏆`;
+          feedbackText.className = "feedback correct-text";
+          nextBtn.classList.add("hidden");
+          restartBtn.classList.remove("hidden");
+          stopAllMusic();
+        } else {
+          const nextDecade = rounds[currentRoundIndex + 1].decade;
+          feedbackText.textContent = `You passed the ${decade}! Next up: the ${nextDecade}.`;
+          feedbackText.className = "feedback correct-text";
+
+          nextBtn.textContent = "Start next decade ⏭️";
+          nextBtn.onclick = () => {
+            currentRoundIndex++;
+            currentQuestionIndex = 0;
+            correctThisRound = 0;
+            updateRoundBadges();
+            nextBtn.onclick = handleNext; // restore default
+            showQuestion();
+            playDecadeMusic(rounds[currentRoundIndex].decade);
+          };
+        }
+      }
+    }
+
+    // ========= EVENT LISTENERS =========
+    submitBtn.addEventListener("click", () => {
+      if (awaitingAnswer && gameStarted) {
+        checkAnswer();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (!awaitingAnswer && gameStarted) {
+        handleNext();
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      nextBtn.classList.remove("hidden");
+      restartBtn.classList.add("hidden");
+      nextBtn.onclick = handleNext;
+      startGame();
+    });
+
+    answerInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (!gameStarted) return;
+        if (awaitingAnswer && !submitBtn.disabled) {
+          checkAnswer();
+        } else if (!awaitingAnswer && !nextBtn.disabled) {
+          handleNext();
+        }
+      }
+    });
+
+    introStartBtn.addEventListener("click", () => {
+      introOverlay.classList.add("hidden");
+      startGame();
+    });
+  </script>
+</body>
+</html>
